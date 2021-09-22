@@ -11,6 +11,8 @@ from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 
+#------------------------------------ COVID Data Processing ---------------------------------------#
+
 #The total COVID deaths of each county in each state
 countyStatesDeathToll = {}
 #The population of each county in each state
@@ -35,7 +37,7 @@ data = pyperclip.paste()
 #Close the browser window
 driver.close()
 
-#Set up the path where the raw data will go
+#Set up the path where the raw COVID data will go
 covidDataPath = Path('F:/datasets/time_series_covid_19_deaths_US_johns_hopkins.csv')
 
 #Open the new file to write the data to it
@@ -73,17 +75,14 @@ for keys, values in countyStatesDeathToll.items():
 #Set up the path to the new output file
 stateLevelCOVIDDeaths = Path('F:/datasets/stateLevelCOVIDDeaths.csv')
 
-#Open the new file to write the data to it
-newFile = open(stateLevelCOVIDDeaths, 'w')
-
-#Write the column names of the output file
-newFile.write('State,Total COVID-19 Deaths\n')
-
-#Now write the data
-for keys in stateDeathToll.keys():
-    newFile.write(keys + ',' + str(stateDeathToll[keys]) + '\n')
-
-#Close the file
-newFile.close()
-
-sys.exit()
+#Write to the output file
+with open(stateLevelCOVIDDeaths, 'w') as f:
+    writer = csv.writer(f, lineterminator='\n')
+    
+    #Write the column names
+    f.write('State,Total COVID-19 Deaths\n')
+    
+    #Write the data
+    for keys in stateDeathToll.keys():
+        dataEntry = [keys, stateDeathToll[keys]]
+        writer.writerow(dataEntry)
